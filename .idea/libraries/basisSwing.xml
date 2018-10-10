@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="basisSwing">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/basisSwing.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/basisSwingDoc.zip!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
