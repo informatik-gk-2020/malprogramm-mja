@@ -1,8 +1,6 @@
 import basis.Stift;
 
 public class PenTool extends Tool {
-    Stift pen;
-
     public PenTool() {
         pen = new Stift();
     }

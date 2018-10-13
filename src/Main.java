@@ -8,7 +8,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        var window = new MalprogrammWindow();
+        MalprogrammWindow window = new MalprogrammWindow();
         window.run();
     }
 }
