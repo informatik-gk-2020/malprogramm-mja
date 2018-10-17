@@ -1,6 +1,10 @@
 import basis.Stift;
 
+import java.awt.*;
+
 public class PenTool extends Tool {
+
+
     public PenTool() {
         pen = new Stift();
     }
@@ -18,4 +22,6 @@ public class PenTool extends Tool {
             pen.hoch();
         }
     }
+
+
 }
