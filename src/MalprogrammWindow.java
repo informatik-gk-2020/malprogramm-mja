@@ -56,12 +56,20 @@ public class MalprogrammWindow {
         }
     }
 
+    /**
+     * Setzt das aktuelle Tool
+     * @param tool das neue Tool
+     */
+    public void setCurrenTool(Tool tool) {
+        currentTool = tool;
+        wahlBoxSchwarz.setzeZustand(true);
+    }
+
     public void checkToolButtons() {
         if (buttonPen.wurdeGedrueckt()) {
-            currentTool = new PenTool();
+            setCurrenTool(new PenTool());
         } else if (buttonEraser.wurdeGedrueckt()) {
-            currentTool = new EraserTool();
-            wahlBoxSchwarz.setzeZustand(true); //Ohne würde, wenn man wieder zum Stift zurückwechselt die Wahlbox auf einer anderen Farbe sein, der Stift ist aber schwarz (Will ich noch schöner machen)
+            setCurrenTool(new EraserTool());
         }
     }
 }
