@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class PenTool extends Tool {
 
-
     public PenTool() {
         pen = new Stift();
     }

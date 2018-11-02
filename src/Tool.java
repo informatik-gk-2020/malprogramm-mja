@@ -16,4 +16,8 @@ public class Tool {
     public void setColor(Color color) {
         pen.setzeFarbe(color);
     }
+
+    public void setSize(int size) {
+        pen.setzeLinienBreite(size);
+    }
 }
