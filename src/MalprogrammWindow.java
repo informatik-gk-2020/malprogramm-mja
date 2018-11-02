@@ -1,5 +1,7 @@
 import basis.*;
 
+import java.awt.*;
+
 public class MalprogrammWindow {
     Fenster window;
     Leinwand test;
@@ -17,9 +19,18 @@ public class MalprogrammWindow {
     Knopf buttonPen;
     Knopf buttonEraser;
 
+    /**
+     * Die Vorschauleinwand
+     */
+    Leinwand previewCanvas;
+
+    /**
+     * Ein Stift, der auf der Vorschauleinwand zeichnet
+     */
+    Stift previewPen;
+
     public MalprogrammWindow() {
         window = new Fenster(900, 900);
-        mouse = new Maus();
 
         currentTool = new PenTool();
 
@@ -45,6 +56,17 @@ public class MalprogrammWindow {
         buttonPen = new Knopf("Draw", 22, 10, 50, 20);
         buttonEraser = new Knopf("Erase", 22, 40, 50, 20);
 
+        // Erstelle die Vorschauleinwand
+        previewCanvas = new Leinwand(window);
+        previewCanvas.setzePosition(0, 0);
+        previewCanvas.setzeTransparenz(true);
+        previewCanvas.setzeHintergrundFarbe(new Color(0, 0, 0, 0));
+        resizeCanvas();
+        previewPen = new Stift(previewCanvas);
+
+        // Erstelle die Maus (hier die Vorschauleinwand als Oberfläche, da sie an oberster Stelle ist)
+        mouse = new Maus(previewCanvas);
+
         test = new Leinwand(0, 0, 95, 235);
         test.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
     }
@@ -58,7 +80,19 @@ public class MalprogrammWindow {
             checkwahlBoxGruppe();
             checkToolButtons();
             size();
+
+            // Größe Leinwand anpassen, wenn die Größe des Fensters geändert wurde
+            if(window.wurdeNeuGezeichnet()) {
+                resizeCanvas();
+            }
         }
+    }
+
+    /**
+     * Passt die Größe der Leinwand an das Fenster an
+     */
+    private void resizeCanvas() {
+        previewCanvas.setzeGroesse(window.breite(), window.hoehe());
     }
 
     public void checkwahlBoxGruppe() {
@@ -90,13 +124,32 @@ public class MalprogrammWindow {
     }
 
     public void size() {
+        if(!mouse.istRechtsGedrueckt()) {
+            return; // wenn die rechte Maustaste nicht gedrückt ist, kann die Methode ignoriert werden
+        }
+
+        // Die Ausgangsposition
         int xStart = mouse.hPosition();
+        int yStart = mouse.vPosition();
+
         while (mouse.istRechtsGedrueckt()) {
-            int xCurrent = mouse.hPosition();
-            int size = xCurrent - xStart;
-            if (size >= 0) {
+            // Die aktuelle Position
+            int x = mouse.hPosition();
+            int y = mouse.vPosition();
+
+            // Die Entfernung zum Ausgangspunkt ist die neue Größe
+            int size = (int)Math.hypot(x - xStart, y - yStart);
+            if (size > 0) {
                 currentTool.setSize(size);
+
+                // Zeichne eine Vorschau der Größe und eine Linie zum Ausgangspunkt
+                previewCanvas.loescheAlles();
+                previewPen.kreis(x, y, size / 2);
+                previewPen.linie(xStart, yStart, x, y);
             }
         }
+
+        // entferne die Vorschau
+        previewCanvas.loescheAlles();
     }
 }
