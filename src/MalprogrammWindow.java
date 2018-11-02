@@ -2,6 +2,7 @@ import basis.*;
 
 public class MalprogrammWindow {
     Fenster window;
+    Leinwand test;
     Maus mouse;
     Tool currentTool;
     WahlBox wahlBoxLila;
@@ -41,8 +42,11 @@ public class MalprogrammWindow {
         wahlBoxGruppe.fuegeEin(wahlBoxSchwarz);
 
 
-        buttonPen = new Knopf("Draw", 10, 10, 50, 20);
-        buttonEraser = new Knopf("Erase", 10, 40, 50, 20);
+        buttonPen = new Knopf("Draw", 22, 10, 50, 20);
+        buttonEraser = new Knopf("Erase", 22, 40, 50, 20);
+
+        test = new Leinwand(0, 0, 95, 235);
+        test.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
     }
 
     public void run() {

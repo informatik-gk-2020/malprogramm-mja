@@ -6,6 +6,7 @@ public class PenTool extends Tool {
 
     public PenTool() {
         pen = new Stift();
+        pen.setzeLinienBreite(20);
     }
 
     @Override
