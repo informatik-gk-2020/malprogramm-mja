@@ -58,21 +58,21 @@ public class MalprogrammWindow {
     }
 
     public void checkwahlBoxGruppe() {
-        if (wahlBoxLila.wurdeGeaendert()) {
+        if (wahlBoxLila.istGewaehlt()) {
             currentTool.setColor(Farbe.MAGENTA);
-        } else if (wahlBoxBlau.wurdeGeaendert()) {
+        } else if (wahlBoxBlau.istGewaehlt()) {
             currentTool.setColor(Farbe.BLAU);
-        } else if (wahlBoxGruen.wurdeGeaendert()) {
+        } else if (wahlBoxGruen.istGewaehlt()) {
             currentTool.setColor(Farbe.GRUEN);
-        } else if (wahlBoxGelb.wurdeGeaendert()) {
+        } else if (wahlBoxGelb.istGewaehlt()) {
             currentTool.setColor(Farbe.GELB);
-        } else if (wahlBoxOrange.wurdeGeaendert()) {
+        } else if (wahlBoxOrange.istGewaehlt()) {
             currentTool.setColor(Farbe.ORANGE);
-        } else if (wahlBoxRot.wurdeGeaendert()) {
+        } else if (wahlBoxRot.istGewaehlt()) {
             currentTool.setColor(Farbe.ROT);
-        } else if (wahlBoxWeiss.wurdeGeaendert()) {
+        } else if (wahlBoxWeiss.istGewaehlt()) {
             currentTool.setColor(Farbe.WEISS);
-        } else if (wahlBoxSchwarz.wurdeGeaendert()) {
+        } else if (wahlBoxSchwarz.istGewaehlt()) {
             currentTool.setColor(Farbe.SCHWARZ);
         }
     }
@@ -82,7 +82,6 @@ public class MalprogrammWindow {
             currentTool = new PenTool();
         } else if (buttonEraser.wurdeGedrueckt()) {
             currentTool = new EraserTool();
-            wahlBoxSchwarz.setzeZustand(true); //Ohne würde, wenn man wieder zum Stift zurückwechselt die Wahlbox auf einer anderen Farbe sein, der Stift ist aber schwarz (Will ich noch schöner machen)
         }
     }
 
