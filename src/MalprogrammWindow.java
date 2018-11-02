@@ -55,9 +55,13 @@ public class MalprogrammWindow {
 
             currentTool.setMousePressed(mouse.istGedrueckt());
             currentTool.setMousePosition(mouse.hPosition(), mouse.vPosition());
-            checkwahlBoxGruppe();
             checkToolButtons();
             size();
+
+            // Wenn eine andere Farbe gewählt wurde, wird diese auf das Tool übertragen
+            if(wahlBoxGruppe.wurdeGeaendert()) {
+                checkwahlBoxGruppe();
+            }
         }
     }
 
@@ -84,6 +88,7 @@ public class MalprogrammWindow {
     public void checkToolButtons() {
         if (buttonPen.wurdeGedrueckt()) {
             currentTool = new PenTool();
+            checkwahlBoxGruppe(); // die Farbe muss vom Tool übernommen werden
         } else if (buttonEraser.wurdeGedrueckt()) {
             currentTool = new EraserTool();
         }
