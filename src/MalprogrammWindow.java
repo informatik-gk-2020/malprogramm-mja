@@ -1,5 +1,7 @@
 import basis.*;
 
+import java.awt.*;
+
 public class MalprogrammWindow {
     Fenster window;
     Leinwand toolsLeinwand;
@@ -20,9 +22,18 @@ public class MalprogrammWindow {
     Knopf buttonDeleteEverything;
     BeschriftungsFeld erklaerungDicke;
 
+    /**
+     * Die Vorschauleinwand
+     */
+    Leinwand previewCanvas;
+
+    /**
+     * Ein Stift, der auf der Vorschauleinwand zeichnet
+     */
+    Stift previewPen;
+
     public MalprogrammWindow() {
         window = new Fenster(900, 900);
-        mouse = new Maus();
 
         currentTool = new PenTool();
 
@@ -49,10 +60,23 @@ public class MalprogrammWindow {
         buttonEraser = new Knopf("Erase", 9, 40, 76, 20);
         buttonDeleteEverything = new Knopf("Delete", 9, 240, 76, 20);
 
+        // Erstelle die Vorschauleinwand
+        previewCanvas = new Leinwand(window);
+        previewCanvas.setzePosition(0, 0);
+        previewCanvas.setzeTransparenz(true);
+        previewCanvas.setzeHintergrundFarbe(new Color(0, 0, 0, 0));
+        resizeCanvas();
+        previewPen = new Stift(previewCanvas);
+
+        // Erstelle die Maus (hier die Vorschauleinwand als Oberfläche, da sie an oberster Stelle ist)
+        mouse = new Maus(previewCanvas);
+
+        // Hintergrund für die Steuerelemente
         toolsLeinwand = new Leinwand(0, 0, 95, 265);
         toolsLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
 
-        erklaerungDicke = new BeschriftungsFeld("Um die Dicke der Werkzeuge zu ändern einfach die rechte Maustaste drücken und horizontal bewegen.", 5, 755, 900, 15);
+        // Erklärung zur Einstellung der Dicke
+        erklaerungDicke = new BeschriftungsFeld("Um die Dicke der Werkzeuge zu ändern einfach die rechte Maustaste drücken und bewegen.", 5, 755, 900, 15);
         erklaerungDickeLeinwand = new Leinwand(0, 750, 655, 50);
         erklaerungDickeLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
     }
@@ -67,10 +91,26 @@ public class MalprogrammWindow {
             size();
 
             // Wenn eine andere Farbe gewählt wurde, wird diese auf das Tool übertragen
-            if(wahlBoxGruppe.wurdeGeaendert()) {
+            if (wahlBoxGruppe.wurdeGeaendert()) {
                 checkwahlBoxGruppe();
             }
+
+            // Größe Leinwand anpassen, wenn die Größe des Fensters geändert wurde
+            window.setzeKomponentenLauscher(new KomponentenLauscher() {
+                /** Wird aufgerufen, wenn die Göße des Fensters geändert wurde */
+                @Override
+                public void bearbeiteKomponentenVeraenderung(Komponente komponente) {
+                    resizeCanvas();
+                }
+            });
         }
+    }
+
+    /**
+     * Passt die Größe der Leinwand an das Fenster an
+     */
+    private void resizeCanvas() {
+        previewCanvas.setzeGroesse(window.breite(), window.hoehe());
     }
 
     public void checkwahlBoxGruppe() {
@@ -105,13 +145,32 @@ public class MalprogrammWindow {
     }
 
     public void size() {
+        if (!mouse.istRechtsGedrueckt()) {
+            return; // wenn die rechte Maustaste nicht gedrückt ist, kann die Methode ignoriert werden
+        }
+
+        // Die Ausgangsposition
         int xStart = mouse.hPosition();
+        int yStart = mouse.vPosition();
+
         while (mouse.istRechtsGedrueckt()) {
-            int xCurrent = mouse.hPosition();
-            int size = xCurrent - xStart;
-            if (size >= 0) {
+            // Die aktuelle Position
+            int x = mouse.hPosition();
+            int y = mouse.vPosition();
+
+            // Die Entfernung zum Ausgangspunkt ist die neue Größe
+            int size = (int) Math.hypot(x - xStart, y - yStart);
+            if (size > 0) {
                 currentTool.setSize(size);
+
+                // Zeichne eine Vorschau der Größe und eine Linie zum Ausgangspunkt
+                previewCanvas.loescheAlles();
+                previewPen.kreis(x, y, size / 2);
+                previewPen.linie(xStart, yStart, x, y);
             }
         }
+
+        // entferne die Vorschau
+        previewCanvas.loescheAlles();
     }
 }
