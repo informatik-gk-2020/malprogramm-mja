@@ -91,14 +91,18 @@ public class MalprogrammWindow {
             size();
 
             // Wenn eine andere Farbe gewählt wurde, wird diese auf das Tool übertragen
-            if(wahlBoxGruppe.wurdeGeaendert()) {
+            if (wahlBoxGruppe.wurdeGeaendert()) {
                 checkwahlBoxGruppe();
             }
 
             // Größe Leinwand anpassen, wenn die Größe des Fensters geändert wurde
-            if(window.wurdeNeuGezeichnet()) {
-                resizeCanvas();
-            }
+            window.setzeKomponentenLauscher(new KomponentenLauscher() {
+                /** Wird aufgerufen, wenn die Göße des Fensters geändert wurde */
+                @Override
+                public void bearbeiteKomponentenVeraenderung(Komponente komponente) {
+                    resizeCanvas();
+                }
+            });
         }
     }
 
@@ -141,7 +145,7 @@ public class MalprogrammWindow {
     }
 
     public void size() {
-        if(!mouse.istRechtsGedrueckt()) {
+        if (!mouse.istRechtsGedrueckt()) {
             return; // wenn die rechte Maustaste nicht gedrückt ist, kann die Methode ignoriert werden
         }
 
@@ -155,7 +159,7 @@ public class MalprogrammWindow {
             int y = mouse.vPosition();
 
             // Die Entfernung zum Ausgangspunkt ist die neue Größe
-            int size = (int)Math.hypot(x - xStart, y - yStart);
+            int size = (int) Math.hypot(x - xStart, y - yStart);
             if (size > 0) {
                 currentTool.setSize(size);
 
