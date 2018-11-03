@@ -165,7 +165,7 @@ public class MalprogrammWindow {
 
                 // Zeichne eine Vorschau der Größe und eine Linie zum Ausgangspunkt
                 previewCanvas.loescheAlles();
-                previewPen.kreis(x, y, size / 2);
+                previewPen.rechteck(x - size / 2, y - size / 2, size, size);
                 previewPen.linie(xStart, yStart, x, y);
             }
         }
