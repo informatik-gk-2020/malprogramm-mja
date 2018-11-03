@@ -76,7 +76,7 @@ public class MalprogrammWindow {
         toolsLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
 
         // Erklärung zur Einstellung der Dicke
-        erklaerungDicke = new BeschriftungsFeld("Um die Dicke der Werkzeuge zu ändern einfach die rechte Maustaste drücken und horizontal bewegen.", 5, 755, 900, 15);
+        erklaerungDicke = new BeschriftungsFeld("Um die Dicke der Werkzeuge zu ändern einfach die rechte Maustaste drücken und bewegen.", 5, 755, 900, 15);
         erklaerungDickeLeinwand = new Leinwand(0, 750, 655, 50);
         erklaerungDickeLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
     }
