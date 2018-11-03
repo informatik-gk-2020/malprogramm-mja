@@ -4,7 +4,8 @@ import java.awt.*;
 
 public class MalprogrammWindow {
     Fenster window;
-    Leinwand test;
+    Leinwand toolsLeinwand;
+    Leinwand erklaerungDickeLeinwand;
     Maus mouse;
     Tool currentTool;
     WahlBox wahlBoxLila;
@@ -18,6 +19,8 @@ public class MalprogrammWindow {
     WahlBoxGruppe wahlBoxGruppe;
     Knopf buttonPen;
     Knopf buttonEraser;
+    Knopf buttonDeleteEverything;
+    BeschriftungsFeld erklaerungDicke;
 
     /**
      * Die Vorschauleinwand
@@ -53,8 +56,9 @@ public class MalprogrammWindow {
         wahlBoxGruppe.fuegeEin(wahlBoxSchwarz);
 
 
-        buttonPen = new Knopf("Draw", 22, 10, 50, 20);
-        buttonEraser = new Knopf("Erase", 22, 40, 50, 20);
+        buttonPen = new Knopf("Draw", 9, 10, 76, 20);
+        buttonEraser = new Knopf("Erase", 9, 40, 76, 20);
+        buttonDeleteEverything = new Knopf("Delete", 9, 240, 76, 20);
 
         // Erstelle die Vorschauleinwand
         previewCanvas = new Leinwand(window);
@@ -67,8 +71,14 @@ public class MalprogrammWindow {
         // Erstelle die Maus (hier die Vorschauleinwand als Oberfläche, da sie an oberster Stelle ist)
         mouse = new Maus(previewCanvas);
 
-        test = new Leinwand(0, 0, 95, 235);
-        test.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
+        // Hintergrund für die Steuerelemente
+        toolsLeinwand = new Leinwand(0, 0, 95, 265);
+        toolsLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
+
+        // Erklärung zur Einstellung der Dicke
+        erklaerungDicke = new BeschriftungsFeld("Um die Dicke der Werkzeuge zu ändern einfach die rechte Maustaste drücken und horizontal bewegen.", 5, 755, 900, 15);
+        erklaerungDickeLeinwand = new Leinwand(0, 750, 655, 50);
+        erklaerungDickeLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
     }
 
     public void run() {
@@ -77,9 +87,13 @@ public class MalprogrammWindow {
 
             currentTool.setMousePressed(mouse.istGedrueckt());
             currentTool.setMousePosition(mouse.hPosition(), mouse.vPosition());
-            checkwahlBoxGruppe();
             checkToolButtons();
             size();
+
+            // Wenn eine andere Farbe gewählt wurde, wird diese auf das Tool übertragen
+            if(wahlBoxGruppe.wurdeGeaendert()) {
+                checkwahlBoxGruppe();
+            }
 
             // Größe Leinwand anpassen, wenn die Größe des Fensters geändert wurde
             if(window.wurdeNeuGezeichnet()) {
@@ -118,8 +132,11 @@ public class MalprogrammWindow {
     public void checkToolButtons() {
         if (buttonPen.wurdeGedrueckt()) {
             currentTool = new PenTool();
+            checkwahlBoxGruppe(); // die Farbe muss vom Tool übernommen werden
         } else if (buttonEraser.wurdeGedrueckt()) {
             currentTool = new EraserTool();
+        } else if (buttonDeleteEverything.wurdeGedrueckt()) {
+            window.loescheAlles();
         }
     }
 
