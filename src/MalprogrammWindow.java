@@ -3,9 +3,12 @@ import basis.*;
 import java.awt.*;
 
 public class MalprogrammWindow {
+    boolean bildZumNachmalenAufWindow = false; //Beim drücken des "buttonBildZumNachmalen" wird der Wert geändert
+
     Fenster window;
-    Leinwand toolsLeinwand;
-    Leinwand erklaerungDickeLeinwand;
+    Leinwand toolsCanvas;
+    Leinwand erklaerungDickeCanvas;
+    Leinwand bildZumNachmalenCanvas;
     Maus mouse;
     Tool currentTool;
     WahlBox wahlBoxLila;
@@ -19,6 +22,7 @@ public class MalprogrammWindow {
     WahlBoxGruppe wahlBoxGruppe;
     Knopf buttonPen;
     Knopf buttonEraser;
+    Knopf buttonBildZumNachmalen;
     Knopf buttonDeleteEverything;
     BeschriftungsFeld erklaerungDicke;
 
@@ -35,8 +39,9 @@ public class MalprogrammWindow {
     public MalprogrammWindow() {
         window = new Fenster(900, 900);
 
-        currentTool = new PenTool();
+        currentTool = new PenTool(); //Das Tool wird konstruiert (Standarttool: Pen)
 
+        //Erstelle die Wahl Boxen für die Farben
         wahlBoxLila = new WahlBox("Lila", 5, 70, 90, 20);
         wahlBoxBlau = new WahlBox("Blau", 5, 90, 90, 20);
         wahlBoxGruen = new WahlBox("Grün", 5, 110, 90, 20);
@@ -55,10 +60,11 @@ public class MalprogrammWindow {
         wahlBoxGruppe.fuegeEin(wahlBoxWeiss);
         wahlBoxGruppe.fuegeEin(wahlBoxSchwarz);
 
-
+        //Erstelle die Knöpfe für die Tools und andere Funktionen
         buttonPen = new Knopf("Draw", 9, 10, 76, 20);
         buttonEraser = new Knopf("Erase", 9, 40, 76, 20);
-        buttonDeleteEverything = new Knopf("Delete", 9, 240, 76, 20);
+        buttonBildZumNachmalen = new Knopf("Bild", 9, 240, 76, 20);
+        buttonDeleteEverything = new Knopf("Delete", 9, 270, 76, 20);
 
         // Erstelle die Vorschauleinwand
         previewCanvas = new Leinwand(window);
@@ -68,22 +74,27 @@ public class MalprogrammWindow {
         resizeCanvas();
         previewPen = new Stift(previewCanvas);
 
+        //Erstelle Leinwand für das Bild zum nachmalen und ermögliche dem pen darauf zu malen
+        bildZumNachmalenCanvas = new Leinwand(200, 100, 500, 500);
+        currentTool.getPen().maleAuf(bildZumNachmalenCanvas);
+        currentTool.getPen().maleAuf(window);
+
         // Erstelle die Maus (hier die Vorschauleinwand als Oberfläche, da sie an oberster Stelle ist)
         mouse = new Maus(previewCanvas);
 
         // Hintergrund für die Steuerelemente
-        toolsLeinwand = new Leinwand(0, 0, 95, 265);
-        toolsLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
+        toolsCanvas = new Leinwand(0, 0, 95, 295);
+        toolsCanvas.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
 
         // Erklärung zur Einstellung der Dicke
         erklaerungDicke = new BeschriftungsFeld("Um die Dicke der Werkzeuge zu ändern einfach die rechte Maustaste drücken und bewegen.", 5, 755, 900, 15);
-        erklaerungDickeLeinwand = new Leinwand(0, 750, 655, 50);
-        erklaerungDickeLeinwand.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
+        erklaerungDickeCanvas = new Leinwand(0, 750, 655, 50);
+        erklaerungDickeCanvas.setzeHintergrundFarbe(Farbe.rgb(240, 240, 240));
     }
 
     public void run() {
         while (window.istSichtbar()) {
-            Hilfe.kurzePause();
+            Hilfe.kurzePause(); //Damit die Schleife nicht zu schnell durchläuft
 
             currentTool.setMousePressed(mouse.istGedrueckt());
             currentTool.setMousePosition(mouse.hPosition(), mouse.vPosition());
@@ -113,6 +124,9 @@ public class MalprogrammWindow {
         previewCanvas.setzeGroesse(window.breite(), window.hoehe());
     }
 
+    /*
+    Überprüft die Wahl Boxen und ändert dann die Farbe des Stiftes
+     */
     public void checkwahlBoxGruppe() {
         if (wahlBoxLila.istGewaehlt()) {
             currentTool.setColor(Farbe.MAGENTA);
@@ -133,12 +147,24 @@ public class MalprogrammWindow {
         }
     }
 
+    /*
+    Überprüft die Knöpfe für die Tools und andere Funktionen
+     */
     public void checkToolButtons() {
         if (buttonPen.wurdeGedrueckt()) {
             currentTool = new PenTool();
             checkwahlBoxGruppe(); // die Farbe muss vom Tool übernommen werden
         } else if (buttonEraser.wurdeGedrueckt()) {
             currentTool = new EraserTool();
+        } else if (buttonBildZumNachmalen.wurdeGedrueckt()) {
+            if (bildZumNachmalenAufWindow) {
+                bildZumNachmalenCanvas.loescheAlles();
+            } else {
+                bildZumNachmalenCanvas.ladeBild("BildZumNachmalen.PNG", true);
+            }
+            currentTool.getPen().maleAuf(bildZumNachmalenCanvas);
+            currentTool.getPen().maleAuf(window);
+            bildZumNachmalenAufWindow = !bildZumNachmalenAufWindow;
         } else if (buttonDeleteEverything.wurdeGedrueckt()) {
             window.loescheAlles();
         }
